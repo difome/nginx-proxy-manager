@@ -1,4 +1,7 @@
 const _                   = require('lodash');
+const fs                  = require('fs');
+const path                = require('path');
+const { execSync }        = require('child_process');
 const error               = require('../lib/error');
 const utils               = require('../lib/utils');
 const proxyHostModel      = require('../models/proxy_host');
@@ -466,6 +469,49 @@ const internalProxyHost = {
 			.then((row) => {
 				return parseInt(row.count, 10);
 			});
+	},
+
+	/**
+	 * Get access or error logs for a Proxy Host
+	 *
+	 * @param   {Access}  access
+	 * @param   {Object}  data
+	 * @param   {Number}  data.id
+	 * @param   {Number}  [data.lines]
+	 * @param   {String}  [data.type]
+	 * @returns {Promise}
+	 */
+	getLogs: (access, data) => {
+		return new Promise((resolve, reject) => {
+			let lines = data.lines || 100;
+			let type = data.type || 'access';
+
+			access.can('proxy_hosts:get', data)
+				.then(() => {
+					return internalProxyHost.get(access, data);
+				})
+				.then((row) => {
+					const logFile = `/data/logs/proxy-host-${row.id}_${type}.log`;
+					
+					if (!fs.existsSync(logFile)) {
+						return resolve([]);
+					}
+
+					try {
+						// Use tail command to get last N lines
+						const output = execSync(`tail -n ${lines} "${logFile}"`, { encoding: 'utf8' });
+						const logLines = output.trim().split('\n').filter(line => line.length > 0);
+						resolve(logLines);
+					} catch (err) {
+						if (err.code === 'ENOENT') {
+							resolve([]);
+						} else {
+							reject(new error.InternalValidationError('Failed to read log file: ' + err.message));
+						}
+					}
+				})
+				.catch(reject);
+		});
 	}
 };
 

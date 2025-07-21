@@ -9,6 +9,7 @@ module.exports = Mn.View.extend({
     ui: {
         able:      'a.able',
         edit:      'a.edit',
+        logs:      'a.logs',
         delete:    'a.delete',
         host_link: '.host-link'
     },
@@ -29,6 +30,11 @@ module.exports = Mn.View.extend({
         'click @ui.edit': function (e) {
             e.preventDefault();
             App.Controller.showNginxProxyForm(this.model);
+        },
+
+        'click @ui.logs': function (e) {
+            e.preventDefault();
+            App.Controller.showNginxProxyLogs(this.model);
         },
 
         'click @ui.delete': function (e) {

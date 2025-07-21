@@ -194,4 +194,58 @@ router
 			.catch(next);
 	});
 
+/**
+ * Get proxy-host logs
+ *
+ * /api/nginx/proxy-hosts/123/logs
+ */
+router
+	.route('/:host_id/logs')
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+
+	/**
+	 * GET /api/nginx/proxy-hosts/123/logs
+	 */
+	.get((req, res, next) => {
+		validator({
+			required:             ['host_id'],
+			additionalProperties: false,
+			properties:           {
+				host_id: {
+					$ref: 'common#/properties/id'
+				},
+				lines: {
+					type: 'integer',
+					minimum: 1,
+					maximum: 1000,
+					default: 100
+				},
+				type: {
+					type: 'string',
+					enum: ['access', 'error'],
+					default: 'access'
+				}
+			}
+		}, {
+			host_id: req.params.host_id,
+			lines:   req.query.lines ? parseInt(req.query.lines, 10) : 100,
+			type:    req.query.type || 'access'
+		})
+			.then((data) => {
+				return internalProxyHost.getLogs(res.locals.access, {
+					id:    parseInt(data.host_id, 10),
+					lines: data.lines,
+					type:  data.type
+				});
+			})
+			.then((logs) => {
+				res.status(200)
+					.send({logs: logs});
+			})
+			.catch(next);
+	});
+
 module.exports = router;

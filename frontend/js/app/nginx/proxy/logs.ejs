@@ -1,0 +1,102 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">
+            <i class="fe fe-file-text"></i> <span class="log-title"><%- i18n('str', 'access-logs') %></span>
+            <span class="text-muted">#<%- host_id %></span>
+        </h5>
+        <button type="button" class="close cancel" aria-label="Close" data-dismiss="modal">&nbsp;</button>
+    </div>
+    <div class="modal-body">
+        <div class="mb-2">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label"><%- i18n('str', 'domains') %>:</label>
+                        <div>
+                            <% domain_names.forEach(function(domain) { %>
+                            <span class="tag"><%- domain %></span>
+                            <% }); %>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="form-label"><%- i18n('str', 'log-type') %>:</label>
+                        <select name="log-type" class="form-control">
+                            <option value="access" selected>Access</option>
+                            <option value="error">Error</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="form-label"><%- i18n('str', 'lines') %>:</label>
+                        <select name="lines" class="form-control">
+                            <option value="50">50</option>
+                            <option value="100" selected>100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="form-label">&nbsp;</label>
+                        <button type="button" class="btn btn-outline-secondary btn-block refresh-logs">
+                            <i class="fe fe-refresh-cw"></i> <%- i18n('str', 'refresh') %>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="real-time-logs" name="real-time">
+                            <label class="custom-control-label" for="real-time-logs">
+                                <i class="fe fe-activity"></i> <%- i18n('str', 'real-time') %>
+                                <small class="text-muted real-time-info" style="display: none;">(<%- i18n('str', 'auto-refresh', {seconds: 3}) %>)</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="log-content" style="background: #1a1a1a; color: #e0e0e0; padding: 15px; border-radius: 4px; max-height: 400px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
+            <div class="text-center"><i class="fe fe-loader"></i> <%- i18n('str', 'loading') %></div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary cancel" data-dismiss="modal"><%- i18n('str', 'close') %></button>
+    </div>
+</div>
+
+<style>
+.log-line {
+    margin-bottom: 2px;
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+
+.log-line:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.log-content.error-logs .log-line {
+    color: #ff6b6b;
+}
+
+.log-content.error-logs .log-line:hover {
+    background-color: rgba(255, 107, 107, 0.1);
+}
+
+.real-time-active .fe-refresh-cw {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style> 

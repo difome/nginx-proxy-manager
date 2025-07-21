@@ -381,6 +381,27 @@ module.exports = {
              */
             disable: function (id) {
                 return fetch('post', 'nginx/proxy-hosts/' + id + '/disable');
+            },
+
+            /**
+             * @param   {Number}  id
+             * @param   {Number}  [lines]
+             * @param   {String}  [type]
+             * @returns {Promise}
+             */
+            getLogs: function (id, lines, type) {
+                let url = 'nginx/proxy-hosts/' + id + '/logs';
+                let params = [];
+                if (lines) {
+                    params.push('lines=' + lines);
+                }
+                if (type) {
+                    params.push('type=' + type);
+                }
+                if (params.length > 0) {
+                    url += '?' + params.join('&');
+                }
+                return fetch('get', url);
             }
         },
 

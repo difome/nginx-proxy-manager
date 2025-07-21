@@ -35,7 +35,18 @@
       "value": "Value",
       "please-wait": "Please wait...",
       "all": "All",
-      "any": "Any"
+      "any": "Any",
+      "refresh": "Refresh",
+      "loading": "Loading...",
+      "domains": "Domains",
+      "lines": "Lines",
+      "log-type": "Log Type",
+      "access-logs": "Access Logs",
+      "error-logs": "Error Logs",
+      "logs-empty": "Logs are empty or file not found",
+      "logs-error": "Error loading logs: {error}",
+      "real-time": "Real-time",
+      "auto-refresh": "Auto-refresh every {seconds}s"
     },
     "login": {
       "title": "Login to your account"
